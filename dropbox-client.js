@@ -33,9 +33,9 @@ socket.on('connect', function() {
          	console.log('http://localhost:8000' + message.path)
 
          	let options = {
-         		host:'http://localhost',
+         		host:HTTP_SERVER_HOST,
          		path:message.path,
-         		port: '8000',
+         		port: HTTP_SERVER_PORT,
   				method: 'GET'
 			}
 
