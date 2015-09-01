@@ -9,7 +9,7 @@ const TCP_SERVER_PORT = '8009'
 const TCP_SERVER_HOST = 'localhost'
 const HTTP_SERVER_PORT = '8000'
 const HTTP_SERVER_HOST = 'localhost'
-const ROOT_DIR_CLIENT = '/work/nodejs/day2/dropbox/client'
+const ROOT_DIR_CLIENT = process.env.CLIENT_ROOT_DIR
 
 
 
@@ -36,8 +36,14 @@ socket.on('connect', function() {
          		host:HTTP_SERVER_HOST,
          		path:message.path,
          		port: HTTP_SERVER_PORT,
-  				method: 'GET'
-			}
+  				  method: 'GET',
+            //headers: {'accept': 'application/x-gtar'}
+			     }
+
+          //let file = fs.createWriteStream("file1.zip")
+          //let request = http.get(options, function(response) {
+           //   response.pipe(file);
+          //})
 
    		 	 http.request(options, callback).end();
    		 	 //http.request(options, 'http://localhost:8000/').pipe(fs.createWriteStream(ROOT_DIR_CLIENT))
@@ -60,6 +66,12 @@ function callback (response) {
   //the whole response has been recieved, so we just print it out here
   response.on('end', function () {
     console.log(str)
+
+    fs.writeFile(`${ROOT_DIR_CLIENT}test1.txt`, str, 'binary', function(err){
+            if (err) throw err
+            console.log('File saved.')
+    })
+
   })
 }
 

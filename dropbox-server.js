@@ -13,13 +13,14 @@ let mkdirp = require('mkdirp')
 let jot = require('json-over-tcp')
 let net = require('net')
 let jsonSocket = require('json-socket')
+let archiver = require('archiver')
 
 require('songbird')
 
 const DROPBOX_EVN = process.env.DROPBOX_ENV
 const PORT = process.env.DROPBOX_HTTP_PORT
-//const ROOT_DIR = process.env.ROOT_DIR
-const ROOT_DIR = path.resolve(process.cwd())
+const ROOT_DIR = process.env.ROOT_DIR
+//const ROOT_DIR = path.resolve(process.cwd())
 const TCP_SERVER_PORT = '8009'
 
 //console.log(process.env)
