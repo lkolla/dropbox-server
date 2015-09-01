@@ -64,18 +64,28 @@ app.get('*', setFilePath, setIfBadRequest, setHeaders, (req, res) => {
 
 	//console.log(req.params.type)
 
+	console.log(req.headers.accept)
+
+	if(req.headers.accept === 'application/x-gtar'){
+		 let archive = archiver('zip')
+    	archive.pipe(res);
+		archive.bulk([
+	        { expand: true, cwd: 'source', src: ['**'], dest: 'source'}
+	    ])
+    	archive.finalize()
+	}
+
 	if(req.params.type === 'DIR'){
 		res.json(res.body)
 		return
 	}
 
-	
 	fs.createReadStream(req.filePath).pipe(res)		
 })
 
 app.head('*', setFilePath, setIfBadRequest, setHeaders, (req, res) => res.end())
 
-app.delete('*', setFilePath, setIfBadRequest, pushUpdateToClients, (req, res, next) => {
+app.delete('*', setFilePath, setIfBadRequest, (req, res, next) => {
 
 	async ()=> {
 
@@ -84,12 +94,17 @@ app.delete('*', setFilePath, setIfBadRequest, pushUpdateToClients, (req, res, ne
 		}else{
 			fs.promise.unlink(req.filePath)
 		}
+
+		req.operation = 'delete'
+
+		pushUpdateToClients(req, res)
+
 		res.status(200).send(req.filePath + ' Successfully Deleted')
 		res.end()
 	}().catch(next)
 })
 
-app.put('*', setFilePath, checkGivenPathExists,  setDirectoryDetails, pushUpdateToClients, (req, res, next) => {
+app.put('*', setFilePath, checkGivenPathExists,  setDirectoryDetails, (req, res, next) => {
 
 	async () =>{
 
@@ -103,13 +118,16 @@ app.put('*', setFilePath, checkGivenPathExists,  setDirectoryDetails, pushUpdate
 			req.pipe(fs.createWriteStream(req.filePath))
 		}
 
+		req.operation = 'create'
+
+		pushUpdateToClients(req, res)
 		res.status(200).send('File / Directory added Successfully')
 		res.end()
 
 	}().catch(next)
 })
 
-app.post('*', setFilePath, setIfBadRequest, setDirectoryDetails, pushUpdateToClients, (req, res, next) => {
+app.post('*', setFilePath, setIfBadRequest, setDirectoryDetails, (req, res, next) => {
 
 	async () =>{
 
@@ -120,22 +138,25 @@ app.post('*', setFilePath, setIfBadRequest, setDirectoryDetails, pushUpdateToCli
 		await fs.promise.truncate(req.filePath, 0)
 		req.pipe(fs.createWriteStream(req.filePath))
 
+		req.operation = 'update'
+
+		pushUpdateToClients(req, res)
+
 		res.status(200).send('File / Directory updated Successfully')
 		res.end()
 
 	}().catch(next)
 })
 
-function pushUpdateToClients(req, res, next){
+function pushUpdateToClients(req, res){
 
 	
 	console.log('Number of clients connected:' + dropBoxClients.length)
 
 	for (let client of dropBoxClients) {
-		client.sendMessage({action:req.operation,path:req.filePath,type:req.isDir?'dir':'file'})
+		client.sendMessage({action:req.operation,path:req.url,type:req.isDir?'dir':'file'})
 	}
 
-	next()
 }
 
 function checkGivenPathExists(req, res, next){
@@ -163,7 +184,7 @@ function setDirectoryDetails(req, res, next){
 
 function setIfBadRequest(req, res, next){
 
-	console.log(req.stat)
+	//console.log(req.stat)
 
 	if(!req.stat){
 		//Given request is invalid..

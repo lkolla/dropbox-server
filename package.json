@@ -24,9 +24,11 @@
   },
   "homepage": "https://github.com/lkolla/dropbox-server#readme",
   "dependencies": {
+    "archiver": "^0.15.0",
     "bluebird-nodeify": "^1.0.0",
     "express": "^4.13.3",
     "fs": "0.0.2",
+    "http": "0.0.0",
     "json-over-tcp": "^0.3.2",
     "json-socket": "^0.1.2",
     "mime-types": "^2.1.5",
