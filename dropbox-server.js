@@ -1,6 +1,3 @@
-//DropBox  
-
-
 //Define all the required third-party modules
 let express = require('express')
 let morgan = require('morgan')
@@ -14,6 +11,7 @@ let jot = require('json-over-tcp')
 let net = require('net')
 let jsonSocket = require('json-socket')
 let archiver = require('archiver')
+let chokidar = require('chokidar');
 
 require('songbird')
 
@@ -58,7 +56,31 @@ tcpServer.on('connection', function(socket) {
     })
 })	
 
-
+//TCP server to watch and notify the changes.
+let watcher = chokidar.watch(ROOT_DIR, {
+  ignored: /[\/\\]\./,
+  persistent: true
+})
+ 
+watcher
+  .on('add', function(path) { 
+  		console.log('File', path, 'has been added') 
+  		pushFSChangesToClients('file', path, 'add')	})
+  .on('change', function(path) 
+  	{ console.log('File', path, 'has been changed') 
+  	  pushFSChangesToClients('file', path, 'change')	})
+  .on('unlink', function(path) 
+  	{ console.log('File', path, 'has been removed') 
+  	  pushFSChangesToClients('file', path, 'unlink')	})
+  // More events. 
+  .on('addDir', function(path) 
+  	{ console.log('Directory', path, 'has been added') 
+  	  pushFSChangesToClients('dir', path, 'add')	})
+  .on('unlinkDir', function(path) 
+  	{ console.log('Directory', path, 'has been removed') 
+  	  pushFSChangesToClients('dir', path, 'unlink')	})
+  .on('ready', function() 
+  	{ console.log('Initial scan complete. Ready for changes.') })
 
 
 app.get('*', setFilePath, setIfBadRequest, setHeaders, (req, res) => {
@@ -96,7 +118,7 @@ app.delete('*', setFilePath, setIfBadRequest, (req, res, next) => {
 			fs.promise.unlink(req.filePath)
 		}
 
-		req.operation = 'delete'
+		req.operation = 'unlink'
 
 		pushUpdateToClients(req, res)
 
@@ -119,7 +141,7 @@ app.put('*', setFilePath, checkGivenPathExists,  setDirectoryDetails, (req, res,
 			req.pipe(fs.createWriteStream(req.filePath))
 		}
 
-		req.operation = 'create'
+		req.operation = 'add'
 
 		pushUpdateToClients(req, res)
 		res.status(200).send('File / Directory added Successfully')
@@ -139,7 +161,7 @@ app.post('*', setFilePath, setIfBadRequest, setDirectoryDetails, (req, res, next
 		await fs.promise.truncate(req.filePath, 0)
 		req.pipe(fs.createWriteStream(req.filePath))
 
-		req.operation = 'update'
+		req.operation = 'change'
 
 		pushUpdateToClients(req, res)
 
@@ -156,6 +178,22 @@ function pushUpdateToClients(req, res){
 
 	for (let client of dropBoxClients) {
 		client.sendMessage({action:req.operation,path:req.url,type:req.isDir?'dir':'file'})
+	}
+
+}
+
+function pushFSChangesToClients(type, path, action){
+
+	console.log('Number of clients connected:' + dropBoxClients.length)
+
+	if(path.indexOf(ROOT_DIR) > -1) {
+		path = path.replace(ROOT_DIR,'')
+		console.log(path)
+		
+	}
+
+	for (let client of dropBoxClients) {
+		client.sendMessage({action:action,path:path,type:type})
 	}
 
 }

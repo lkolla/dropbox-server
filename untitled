@@ -1,9 +1,0 @@
-if(message.action !== 'undefined'){
-         	
-         	 let options = {
-    		 	url: 'https://localhost:8000/' + message.path,
-    		 	headers: {'accept': 'application/x-gtar'}
-   		 	  }
-
-		request(options, 'http://localhost:8000/').pipe(fs.createWriteStream(ROOT_DIR_CLIENT))
-		}

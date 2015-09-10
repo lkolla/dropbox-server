@@ -26,6 +26,7 @@
   "dependencies": {
     "archiver": "^0.15.0",
     "bluebird-nodeify": "^1.0.0",
+    "chokidar": "^1.0.5",
     "express": "^4.13.3",
     "fs": "0.0.2",
     "http": "0.0.0",

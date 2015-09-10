@@ -13,3 +13,9 @@ Required: Download/Upload must be streamed using the Stream module
 Not Completed:
 Required: chokidar
 Required: TCP Client, Which receives updates as a TAR file and update the client file system.
+
+
+Checkout conflict with files: 
+app/src/main/resources/environmentConfig/default/maas-beans.xml
+Checkout conflict with files: 
+app/src/main/resources/environmentConfig/default/maas-beans.xml
