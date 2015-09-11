@@ -1,26 +1,9 @@
 
-- [x] Implemented HTTP Server which will be listening on 8000 for CRUD operations on server file system.
-
-![Walkthrough Image -1](https://github.com/lkolla/wmt-blogger/blob/master/wmt-blogger.gif)
-![Walkthrough Image -2](https://github.com/lkolla/wmt-blogger/blob/master/wmt-blogger-login.gif)
-
-Completed:
-Required: Implemented HTTP Server which will be listening on 8000 for CRUD operations on server file system.
-Required: TCP Server, Which keeps track of all clients connected to Server and send updates about changes on file system.
-Required: TCP Client, Which receives and print in console the changes.
-Required: Return an archive when specified in header.
-Required: Configured the directory path on server which can change later.
-Optional: Support multiple clients.
-Required: Download/Upload must be streamed using the Stream module
-
-
-
-Not Completed:
-Required: chokidar
-Required: TCP Client, Which receives updates as a TAR file and update the client file system.
-
-
-Checkout conflict with files: 
-app/src/main/resources/environmentConfig/default/maas-beans.xml
-Checkout conflict with files: 
-app/src/main/resources/environmentConfig/default/maas-beans.xml
+- [x] Required: Implemented HTTP Server which will be listening on 8000 for CRUD operations on server file system.
+- [x]  TCP Server, Which keeps track of all clients connected to Server and send updates about changes on file system.
+- [x]  TCP Client, Which receives and print in console the changes.
+- [x]  Return an archive when specified in header.
+- [x]  Configured the directory path on server which can change later.
+- [x]  Optional: Support multiple clients.
+- [x]  Download/Upload must be streamed using the Stream module
+- [x] Required: chokidar
