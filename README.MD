@@ -1,5 +1,10 @@
-Completed:
 
+- [x] Implemented HTTP Server which will be listening on 8000 for CRUD operations on server file system.
+
+![Walkthrough Image -1](https://github.com/lkolla/wmt-blogger/blob/master/wmt-blogger.gif)
+![Walkthrough Image -2](https://github.com/lkolla/wmt-blogger/blob/master/wmt-blogger-login.gif)
+
+Completed:
 Required: Implemented HTTP Server which will be listening on 8000 for CRUD operations on server file system.
 Required: TCP Server, Which keeps track of all clients connected to Server and send updates about changes on file system.
 Required: TCP Client, Which receives and print in console the changes.

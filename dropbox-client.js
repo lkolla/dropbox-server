@@ -4,6 +4,7 @@ let mkdirp = require('mkdirp')
 let net = require('net')
 let jsonSocket = require('json-socket')
 let http = require('http')
+let path = require('pn/path')
 
 const TCP_SERVER_PORT = '8009'
 const TCP_SERVER_HOST = 'localhost'
@@ -23,84 +24,39 @@ socket.on('connect', function() {
 
          console.log(message)
 
-         switch(message.action){
-            case 'add':
-                console.log('inside add')
-                makeCallToServer(message)
+         switch(message.type){
+            case 'file':
+                console.log('inside file')
+                //makeCallToServer(message)
                 break
-            case 'change':
-                console.log('inside chnage')
-                makeCallToServer(message)
-                break
-            case 'unlink':
-                console.log('inside unlin')
-                makeCallToServer(message)
-                break
-            default:
-                console.log('inside default')
-            }
+            case 'dir':
+                updateFileSystem(message)                  
+                break          
+         }
 
-         //if(message.action === 'add') 
-         	//|| message.action === 'change' 
-         	//|| message.action === 'unlink' ){
-         	
-         	//console.log(message)
-
-         	//let options = {
-         	//	host:HTTP_SERVER_HOST,
-         	//	path:message.path,
-         	//	port: HTTP_SERVER_PORT,
-  				 // method: 'GET',
-            //headers: {'accept': 'application/x-gtar'}
-			     //}
-
-          //let file = fs.createWriteStream("file1.zip")
-          //let request = http.get(options, function(response) {
-           //   response.pipe(file);
-          //})
-
-   		 	 //http.request(options, callback).end();
-   		 	 //http.request(options, 'http://localhost:8000/').pipe(fs.createWriteStream(ROOT_DIR_CLIENT))
-
-         //}
-         	
      })
 	
 })
 
-function makeCallToServer(message){
 
-let options = {
-  host:HTTP_SERVER_HOST,
-  path:message.path,
-  port: HTTP_SERVER_PORT,
-  method: 'GET',
-  //headers: {'accept': 'application/x-gtar'}
+function updateFileSystem (message) {
+
+  let filePath = path.resolve(path.join(ROOT_DIR, message.path))
+
+  async() => {
+
+      if(message.action === 'add'){
+           if(stat){
+            console.log('folder already exists')
+            return
+           }
+           await mkdirp.promise(req.dirPath)
+      }else {
+           await rimraf.promise(req.filePath)
+      }  
+  }()
+   
   }
-
- http.request(options, callback).end()
-
-}
-
-function callback (response) {
-  var str = ''
-
-  //another chunk of data has been recieved, so append it to `str`
-  response.on('data', function (chunk) {
-    str += chunk
-  });
-
-  //the whole response has been recieved, so we just print it out here
-  response.on('end', function () {
-    console.log(str)
-
-    fs.writeFile(`${ROOT_DIR}test1.txt`, str, 'binary', function(err){
-            if (err) throw err
-            console.log('File saved.')
-    })
-
-  })
-}
 
 
 
