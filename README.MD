@@ -1,3 +1,8 @@
+This is a basic Dropbox clone to sync files across multiple remote folders.
+
+Time spent: 20 Hours
+
+![Walkthrough Image](https://github.com/lkolla/dropbox-server/blob/master/dropbox_walkthrough.gif)
 
 - [x] Required: Implemented HTTP Server which will be listening on 8000 for CRUD operations on server file system.
 - [x]  TCP Server, Which keeps track of all clients connected to Server and send updates about changes on file system.
